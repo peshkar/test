@@ -8,44 +8,29 @@
 
     public class RegexOperationPicker : IOperationPicker
     {
-        private readonly IMathOperationCollection _mathOperations;
+        private readonly IMathOperationCollection _operations;
 
-        private readonly Dictionary<string, string> _templates;
+        private readonly Dictionary<char, string> _templates;
 
-        public RegexOperationPicker(IMathOperationCollection mathOperationCollection)
+        public RegexOperationPicker(IMathOperationCollection operationCollection)
         {
-            _mathOperations = mathOperationCollection;
-            _templates = new Dictionary<string, string>
+            _operations = operationCollection;
+
+            var t = Common.Constants.Token;
+            _templates = new Dictionary<char, string>
                              {
-                                 {
-                                     "+",
-                                     $"{Common.Constants.Token}[/+]{Common.Constants.Token}"
-                                 },
-                                 {
-                                     "-",
-                                     $"{Common.Constants.Token}[/-]{Common.Constants.Token}"
-                                 },
-                                 {
-                                     "*",
-                                     $"{Common.Constants.Token}[/*]{Common.Constants.Token}"
-                                 },
-                                 {
-                                     "/",
-                                     $"{Common.Constants.Token}[//]{Common.Constants.Token}"
-                                 },
-                                 {
-                                     "^",
-                                     $"{Common.Constants.Token}[/^]{Common.Constants.Token}"
-                                 }
+                                 { '+', $"{t}[/+]{t}" },
+                                 { '-', $"{t}[/-]{t}" },
+                                 { '*', $"{t}[/*]{t}" },
+                                 { '/', $"{t}[//]{t}" },
+                                 { '^', $"{t}[/^]{t}" }
                              };
         }
 
         public IMathOperation Pick(string input)
         {
-            IMathOperation mathOperation;
-
+            IMathOperation operation;
             var context = GetEvaluationContext(input);
-
             if (context == null)
             {
                 return null;
@@ -56,47 +41,53 @@
             // hack for unsigned values
             if (char.IsDigit(chars[0]))
             {
-                mathOperation = _mathOperations.FirstOrDefault(t => context.Content.Contains(t.Token));
-                if (mathOperation != null)
-                {
-                    mathOperation.SetContext(context);
-                    return mathOperation;
-                }
+                operation = _operations.FirstOrDefault(t => context.Content.Contains(t.Token));
             }
             else
             {
                 var updatedValue = string.Concat(chars.Skip(1));
-                mathOperation = _mathOperations.FirstOrDefault(t => updatedValue.Contains(t.Token));
-                if (mathOperation != null)
+                operation = _operations.FirstOrDefault(t => updatedValue.Contains(t.Token));
+            }
+
+            if (operation == null)
+            {
+                return null;
+            }
+
+            operation.SetContext(context);
+            return operation;
+        }
+
+        private static bool IsHasRoundParentheses(Capture capture, string input)
+        {
+            if (capture.Index > 0 && capture.Index + capture.Length < input.Length)
+            {
+                var begin = input.Substring(capture.Index - 1, 1);
+                var end = input.Substring(capture.Index + capture.Length, 1);
+                if (begin == "(" && end == ")")
                 {
-                    mathOperation.SetContext(context);
-                    return mathOperation;
+                    return true;
                 }
             }
 
-            return null;
+            return false;
         }
 
         private IEvaluationContext GetEvaluationContext(string input)
         {
             var result = new List<dynamic>();
-            foreach (var operation in _mathOperations)
+            foreach (var op in _operations.OrderBy(p => p.Priority))
             {
-                if (_templates.TryGetValue(operation.Token.ToString(), out string pattern))
+                if (_templates.TryGetValue(op.Token, out string pattern))
                 {
                     foreach (Match match in Regex.Matches(input, pattern, RegexOptions.Compiled))
                     {
-                        var priority = operation.Priority;
+                        var priority = op.Priority;
 
-                        // increase priority of evaluation has parentheses
-                        if (match.Index > 0 && match.Index + match.Length < input.Length)
+                        // increase priority of evaluation for context that has parentheses
+                        if (IsHasRoundParentheses(match, input))
                         {
-                            var begin = input.Substring(match.Index - 1, 1);
-                            var end = input.Substring(match.Index + match.Length, 1);
-                            if (begin == "(" && end == ")")
-                            {
-                                priority++;
-                            }
+                            priority++;
                         }
 
                         result.Add(new { pattern, match, priority });
