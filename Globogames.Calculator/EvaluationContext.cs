@@ -22,5 +22,7 @@
         public int Index { get; }
 
         public string Content { get; }
+
+        public int Priority { get; set; }
     }
 }

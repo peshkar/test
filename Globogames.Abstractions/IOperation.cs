@@ -2,6 +2,6 @@
 {
     public interface IOperation
     {
-        int Priority { get; }
+        int Priority { get; set; }
     }
 }

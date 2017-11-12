@@ -21,7 +21,7 @@
             ParenthesesToken = $"[(]{Constants.Token}[)]";
         }
 
-        public int Priority { get; }
+        public int Priority { get; set; }
 
         public string Transform(string input)
         {

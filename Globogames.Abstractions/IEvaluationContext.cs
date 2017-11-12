@@ -5,5 +5,7 @@
         int Index { get; }
 
         string Content { get; }
+
+        int Priority { get; set; }
     }
 }

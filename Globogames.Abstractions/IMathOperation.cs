@@ -1,10 +1,16 @@
 ﻿namespace Globogames.Abstractions
 {
+    using System.Collections.Generic;
+
     public interface IMathOperation : IOperation
     {
         char Token { get; }
 
-        void SetContext(IEvaluationContext context);
+        IEnumerable<IEvaluationContext> GetEvaluations(string input);
+
+        void SetupContext(IEvaluationContext context);
+
+        IEvaluationContext Context { get; }
 
         string Perform(string input);
 
