@@ -1,0 +1,79 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{DC6F5FC4-1770-4A7C-B408-C81B9F5E5AAC}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>Globogames.Calculator</RootNamespace>
+    <AssemblyName>Globogames.Calculator</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Ninject, Version=3.3.3.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
+      <HintPath>..\packages\Ninject.3.3.3\lib\net45\Ninject.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="BaseCalculator.cs" />
+    <Compile Include="Implementations\RegexCalculator\Operations\ExponentiationMathOperation.cs" />
+    <Compile Include="Implementations\RegexCalculator\Operations\TransformOperationCollection.cs" />
+    <Compile Include="EvaluationContext.cs" />
+    <Compile Include="Implementations\RegexCalculator\RegexOperationPicker.cs" />
+    <Compile Include="Implementations\RegexCalculator\Operations\DivisionMathOperation.cs" />
+    <Compile Include="Implementations\RegexCalculator\Operations\MathOperationsCollection.cs" />
+    <Compile Include="Implementations\RegexCalculator\Operations\MultiplicationMathOperation.cs" />
+    <Compile Include="Implementations\RegexCalculator\Operations\OpenParenthesesTransformOperation.cs" />
+    <Compile Include="Implementations\RegexCalculator\Operations\SubtractionMathOperation.cs" />
+    <Compile Include="Implementations\RegexCalculator\Operations\SumMathOperation.cs" />
+    <Compile Include="NinjectContext\RegexCalculatorModule.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Implementations\RegexCalculator\RegexCalculator.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Globogames.Abstractions\Globogames.Abstractions.csproj">
+      <Project>{ff148de7-d8df-474f-aca7-cdf1471e626c}</Project>
+      <Name>Globogames.Abstractions</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Globogames.Common\Globogames.Common.csproj">
+      <Project>{4aeef1a5-460c-4f5f-b8ba-45a3ae06c1a1}</Project>
+      <Name>Globogames.Common</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>
