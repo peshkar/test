@@ -16,7 +16,7 @@
                         new SubtractionMathOperation('-', 0),
                         new MultiplicationMathOperation('*', 1),
                         new DivisionMathOperation('/', 1),
-                        new ExponentiationMathOperation('^', 1)
+                        new ExponentiationMathOperation('^', 2)
                     };
         }
 
