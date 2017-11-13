@@ -2,7 +2,6 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Globalization;
     using System.Linq;
     using System.Text.RegularExpressions;
 
@@ -48,26 +47,20 @@
             Context = context;
         }
 
-
         public string Perform(string input)
         {
-            var strings = Regex.Matches(Context.Content, Constants.Token)
+            var strings = Regex.Matches(Context.Content, Constants.Token, RegexOptions.Compiled)
                 .Cast<Match>()
                 .Select(m => m.Value)
                 .ToArray();
-            var result = Perform(strings);
-            input = input.ReplaceAt(Context.Content, result.ToString(CultureInfo.InvariantCulture), Context.Index);
+
+            var decimals = Array.ConvertAll(strings, Utils.Converter);
+
+            var result = decimals[0] + decimals[1];
+
+            input = Context.ReplaceAt(input, result);
+
             return input;
-        }
-
-        public decimal Perform(string[] args)
-        {
-            return Perform(Array.ConvertAll(args, Utils.Converter));
-        }
-
-        public decimal Perform(decimal[] args)
-        {
-            return args[0] + args[1];
         }
     }
 }

@@ -2,6 +2,8 @@
 {
     using System;
 
+    using Globogames.Abstractions;
+
     public static class Utils
     {
         public static decimal Converter(string s)
@@ -24,6 +26,16 @@
         public static string ReplaceAt(this string text, string search, string replace, int index)
         {
             return text.Substring(0, index) + replace + text.Substring(index + search.Length);
+        }
+
+        public static string ReplaceAt(this IEvaluationContext context, string input, decimal replace)
+        {
+            return input.Substring(0, context.Index) + replace + input.Substring(context.Index + context.Content.Length);
+        }
+
+        public static string ReplaceAt(this IEvaluationContext context, string input, double replace)
+        {
+            return input.Substring(0, context.Index) + replace + input.Substring(context.Index + context.Content.Length);
         }
     }
 }
