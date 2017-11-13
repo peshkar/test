@@ -59,7 +59,7 @@
             var decimals = Array.ConvertAll(strings, Utils.Converter);
 
             // small hack
-            if (Context.Content.ToCharArray().Count(t => t == '-') <= 1)
+            if (Context.Content.Contains("--") == false)
             {
                 result = decimals[0] - Math.Abs(decimals[1]);
             }
