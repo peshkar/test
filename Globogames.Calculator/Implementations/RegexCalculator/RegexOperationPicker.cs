@@ -35,7 +35,13 @@
 
             var nextStep = list.OrderByDescending(t => t.context.Priority)
                 .ThenBy(t => t.context.Index)
-                .FirstOrDefault();
+                .Select(t => 
+                    new
+                        {
+                            context = (IEvaluationContext)t.context,
+                            operation = (IMathOperation)t.operation
+                        })
+                .FirstOrDefault(t => t.context.Content.Contains(t.operation.Token));
 
             // solve the operation with the context
             if (nextStep != null)
