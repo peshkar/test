@@ -54,9 +54,19 @@
                 .Select(m => m.Value)
                 .ToArray();
 
+            decimal result;
+
             var decimals = Array.ConvertAll(strings, Utils.Converter);
 
-            var result = decimals[0] - Math.Abs(decimals[1]);
+            // small hack
+            if (Context.Content.ToCharArray().Count(t => t == '-') <= 1)
+            {
+                result = decimals[0] - Math.Abs(decimals[1]);
+            }
+            else
+            {
+                result = decimals[0] - decimals[1];
+            }
 
             input = Context.ReplaceAt(input, result);
 
