@@ -30,12 +30,27 @@
 
         public static string ReplaceAt(this IEvaluationContext context, string input, decimal replace)
         {
-            return input.Substring(0, context.Index) + replace + input.Substring(context.Index + context.Content.Length);
+            return input.Substring(0, context.Index) + replace + input.Substring(context.Index + context.Token.Length);
         }
 
         public static string ReplaceAt(this IEvaluationContext context, string input, double replace)
         {
-            return input.Substring(0, context.Index) + replace + input.Substring(context.Index + context.Content.Length);
+            return input.Substring(0, context.Index) + replace + input.Substring(context.Index + context.Token.Length);
+        }
+
+        public static bool IsHasRoundParentheses(this IEvaluationContext capture)
+        {
+            if (capture.Index > 0 && capture.Index + capture.Token.Length < capture.Input.Length)
+            {
+                var begin = capture.Input.Substring(capture.Index - 1, 1);
+                var end = capture.Input.Substring(capture.Index + capture.Token.Length, 1);
+                if (begin == "(" && end == ")")
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
     }
 }

@@ -1,9 +1,11 @@
-﻿namespace Calculator.Implementations.RegexCalculator.Operations
+﻿namespace Calculator.Implementations.RegexCalculator.Collections
 {
     using System.Collections;
     using System.Collections.Generic;
 
     using Abstractions;
+
+    using Calculator.Implementations.RegexCalculator.Transform;
 
     public class TransformOperationCollection : ITransformOperationCollection
     {

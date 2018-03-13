@@ -1,32 +1,42 @@
 ﻿namespace Calculator.Implementations.RegexCalculator
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
 
     using Abstractions;
 
+    using Common;
+
     public class RegexOperationPicker : IOperationPicker
     {
-        private readonly IMathOperationCollection _operations;
+        private readonly IDictionary<IMathOperationTemplate, Type> _operationsMappings;
 
-        public RegexOperationPicker(IMathOperationCollection operationCollection)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RegexOperationPicker"/> class.
+        /// </summary>
+        /// <param name="operationMappings">
+        /// The operation collection.
+        /// </param>
+        public RegexOperationPicker(IDictionary<IMathOperationTemplate, Type> operationMappings)
         {
-            _operations = operationCollection;
+            _operationsMappings = operationMappings;
         }
 
         public IMathOperation Pick(string input)
         {
             var list = new List<dynamic>();
-            foreach (var operation in _operations.OrderByDescending(p => p.Priority))
+            var templates = _operationsMappings.Select(t => t.Key);
+            foreach (var operation in templates.OrderByDescending(p => p.Priority))
             {
-                foreach (var context in operation.GetEvaluations(input))
+                foreach (var context in operation.GetEvaluationsContexts(input))
                 {
-                    context.Priority = operation.Priority;
+                    context.SetPriority(operation.Priority);
 
                     // increase priority of evaluation for context that has parentheses
-                    if (IsHasRoundParentheses(context, input))
+                    if (context.IsHasRoundParentheses())
                     {
-                        context.Priority++;
+                        context.SetPriority(context.Priority + 1);
                     }
 
                     list.Add(new { context, operation });
@@ -35,40 +45,23 @@
 
             var nextStep = list.OrderByDescending(t => t.context.Priority)
                 .ThenBy(t => t.context.Index)
-                .Select(t => 
-                    new
-                        {
-                            context = (IEvaluationContext)t.context,
-                            operation = (IMathOperation)t.operation
-                        })
-                .FirstOrDefault(t => t.context.Content.Contains(t.operation.Token));
+                .Select(
+                    t => new
+                             {
+                                 context = (IEvaluationContext)t.context,
+                                 operation = (IMathOperationTemplate)t.operation
+                             })
+                .FirstOrDefault(t => t.context.Token.Contains(t.operation.Token));
 
-            // solve the operation with the context
             if (nextStep != null)
             {
-                var resultOperation = nextStep.operation;
-
-                resultOperation.SetupContext(nextStep.context);
-
-                return resultOperation;
-            }
-
-            return null;
-        }
-
-        private static bool IsHasRoundParentheses(IEvaluationContext capture, string input)
-        {
-            if (capture.Index > 0 && capture.Index + capture.Content.Length < input.Length)
-            {
-                var begin = input.Substring(capture.Index - 1, 1);
-                var end = input.Substring(capture.Index + capture.Content.Length, 1);
-                if (begin == "(" && end == ")")
+                if (_operationsMappings.TryGetValue(nextStep.operation, out Type type))
                 {
-                    return true;
+                    return (IMathOperation)Activator.CreateInstance(type, nextStep.context);
                 }
             }
 
-            return false;
+            return null;
         }
     }
 }

@@ -1,56 +1,33 @@
 ﻿namespace Calculator.Implementations.RegexCalculator.Operations
 {
     using System;
-    using System.Collections.Generic;
     using System.Linq;
     using System.Text.RegularExpressions;
 
     using Abstractions;
 
+    using Calculator.Implementations.RegexCalculator.OperationTemplates;
+
     using Common;
 
-    public class SumMathOperation : IMathOperation
+    public class SumMathOperation : SumMathOperationTemplate, IMathOperation
     {
-        private readonly string _pattern;
+        private readonly IEvaluationContext _context;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SumMathOperation"/> class.
         /// </summary>
-        /// <param name="token">
-        /// The token.
+        /// <param name="context">
+        /// The context.
         /// </param>
-        /// <param name="priority">
-        /// The priority.
-        /// </param>
-        public SumMathOperation(char token, int priority)
+        public SumMathOperation(IEvaluationContext context)
         {
-            Priority = priority;
-            Token = token;
-            _pattern = $"{Constants.Token}[/+]{Constants.Token}";
-        }
-
-        public char Token { get; }
-
-        public int Priority { get; set; }
-
-        public IEvaluationContext Context { get; private set; }
-
-        public IEnumerable<IEvaluationContext> GetEvaluations(string input)
-        {
-            return Regex.Matches(input, _pattern, RegexOptions.Compiled)
-                .Cast<Match>()
-                .Select(m => new EvaluationContext(m.Index, m.Value))
-                .ToArray();
-        }
-
-        public void SetupContext(IEvaluationContext context)
-        {
-            Context = context;
+            _context = context;
         }
 
         public string Perform(string input)
         {
-            var strings = Regex.Matches(Context.Content, Constants.Token, RegexOptions.Compiled)
+            var strings = Regex.Matches(_context.Token, Constants.Token, RegexOptions.Compiled)
                 .Cast<Match>()
                 .Select(m => m.Value)
                 .ToArray();
@@ -59,7 +36,7 @@
 
             var result = decimals[0] + decimals[1];
 
-            input = Context.ReplaceAt(input, result);
+            input = _context.ReplaceAt(input, result);
 
             return input;
         }

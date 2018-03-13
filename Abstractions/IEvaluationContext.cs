@@ -4,8 +4,12 @@
     {
         int Index { get; }
 
-        string Content { get; }
+        string Token { get; }
 
-        int Priority { get; set; }
+        int Priority { get; }
+
+        string Input { get; }
+
+        void SetPriority(int newPriority);
     }
 }

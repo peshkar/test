@@ -1,4 +1,4 @@
-﻿namespace Calculator.Implementations.RegexCalculator.Operations
+﻿namespace Calculator.Implementations.RegexCalculator.Transform
 {
     using System.Text.RegularExpressions;
 
