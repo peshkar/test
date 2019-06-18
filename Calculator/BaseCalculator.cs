@@ -1,5 +1,6 @@
 ﻿namespace Calculator
 {
+    using System;
     using System.Linq;
 
     using Abstractions;
@@ -40,9 +41,11 @@
 
                 // step 3 - perform this operation
                 input = operation.Perform(input);
+
+                Console.WriteLine(input);
             }
 
-            return Utils.Converter(input);
+            return Utilities.ParseDecimal(input);
         }
     }
 }
