@@ -30,9 +30,9 @@
                 .Select(m => m.Value)
                 .ToArray();
 
-            var decimals = Array.ConvertAll(strings, Utils.Converter);
+            var values = Array.ConvertAll(strings, Utilities.ParseDouble);
 
-            var result = Math.Pow((double)decimals[0], (double)decimals[1]);
+            var result = Math.Pow(values[0], values[1]);
 
             input = _context.ReplaceAt(input, result);
 

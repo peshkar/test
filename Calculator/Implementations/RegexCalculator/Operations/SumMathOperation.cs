@@ -32,7 +32,7 @@
                 .Select(m => m.Value)
                 .ToArray();
 
-            var decimals = Array.ConvertAll(strings, Utils.Converter);
+            var decimals = Array.ConvertAll(strings, Utilities.ParseDecimal);
 
             var result = decimals[0] + decimals[1];
 

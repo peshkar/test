@@ -32,7 +32,7 @@
 
             decimal result;
 
-            var decimals = Array.ConvertAll(strings, Utils.Converter);
+            var decimals = Array.ConvertAll(strings, Utilities.ParseDecimal);
 
             // small hack
             if (_context.Token.Contains("--") == false)
